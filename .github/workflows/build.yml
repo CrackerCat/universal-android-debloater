@@ -4,6 +4,21 @@ on:
     branches:
       - ci-test
 jobs:
+  uad_windows:
+    runs-on: windows-latest
+    steps:
+    - uses: hecrj/setup-rust-action@v1
+      with:
+          rust-version: nightly
+    - uses: actions/checkout@v2
+    - name: Build uad-windows
+      run: cargo build --release
+    - name: Archive binary
+      uses: actions/upload-artifact@v2
+      with:
+        name: uad_gui-x86_64
+        path: target/release/uad_gui.exe
+
   uad_linux:
     runs-on: ubuntu-latest
     steps:
@@ -24,21 +39,6 @@ jobs:
       with:
         name: uad_gui-x86_64-linux
         path: target/release/uad_gui
-
-  uad_windows:
-    runs-on: windows-latest
-    steps:
-    - uses: hecrj/setup-rust-action@v1
-      with:
-          rust-version: nightly
-    - uses: actions/checkout@v2
-    - name: Build uad-windows
-      run: cargo build --release
-    - name: Archive binary
-      uses: actions/upload-artifact@v2
-      with:
-        name: uad_gui-x86_64
-        path: target/release/uad_gui.exe
 
   uad_macos:
     runs-on: macOS-latest
