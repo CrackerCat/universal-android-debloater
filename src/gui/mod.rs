@@ -117,7 +117,7 @@ impl Application for UadGui {
         #[cfg(feature = "wgpu")]
         #[allow(unused_variables)]
         let refresh_btn_display = Svg::from_path(
-            format!("{}/ressources/assets/refresh.svg", env!("CARGO_MANIFEST_DIR"))
+            format!("{}/ressources/assets/test.svg", env!("CARGO_MANIFEST_DIR"))
         )
             .width(Length::Units(17))
             .height(Length::Units(17));
