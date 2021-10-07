@@ -17,10 +17,12 @@ jobs:
         sudo apt-get install -y libxkbcommon-dev lld
     - name: Build uad-linux
       run: cargo build --release
+    - name: Make it executable
+      run: chmod +x target/release/uad_gui
     - name: Archive binary
       uses: actions/upload-artifact@v2
       with:
-        name: uad_gui-x86_64
+        name: uad_gui-x86_64-linux
         path: target/release/uad_gui
 
   uad_windows:
@@ -46,9 +48,9 @@ jobs:
           rust-version: nightly
     - uses: actions/checkout@v2
     - name: Build uad-macos
-      env:
-        MACOSX_DEPLOYMENT_TARGET: 10.14
       run: cargo build --release
+    - name: Make it executable
+      run: chmod +x target/release/uad_gui
     - name: Archive binary
       uses: actions/upload-artifact@v2
       with:
