@@ -44,7 +44,7 @@ jobs:
         cargo build --features glow --release
         mv target/release/uad_gui target/release/uad_gui-opengl
         cargo build --release
-     - name: Create Vulkan build artifact
+    - name: Create Vulkan build artifact
       uses: actions/upload-artifact@v2
       with:
         name: uad_gui-linux
