@@ -13,10 +13,13 @@ jobs:
         include:
           - build_target: linux
             os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
           - build_target: macos
             os: macos-latest
+            target: x86_64-apple-darwin
           - build_target: windows
             os: windows-latest
+            target: x86_64-pc-windows-msvc
 
     steps:
       - name: Install Rust toolchain
@@ -36,7 +39,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release --all-features
+          args: --release --target ${{ matrix.target }} --all-features
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
