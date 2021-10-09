@@ -13,13 +13,10 @@ jobs:
         include:
           - build_target: linux
             os: ubuntu-latest
-            artifact_prefix: linux
           - build_target: macos
             os: macos-latest
-            artifact_prefix: macos
           - build_target: windows
             os: windows-latest
-            artifact_prefix: windows
 
     steps:
       - name: Install Rust toolchain
@@ -45,12 +42,12 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           body_path: ${{ github.workspace }}/CHANGELOG.md
-          files: target/${{ matrix.target }}/release/uad_gui*
+          files: target/release/uad_gui*
       - name: Draft release
         uses: softprops/action-gh-release@v1
         with:
           draft: true
           body_path: ${{ github.workspace }}/CHANGELOG.md
-          files: target/${{ matrix.target }}/release/uad_gui*
+          files: target/release/uad_gui*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
