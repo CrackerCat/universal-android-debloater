@@ -32,8 +32,3 @@ regex = "^1.5"
 opt-level = "s"
 lto = true
 strip = "symbols"
-
-[[bin]]
-name = "uad_gui-opengl"
-path = "src/main.rs"
-required-features = ["glow"]
