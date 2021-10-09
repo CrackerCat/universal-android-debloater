@@ -4,78 +4,52 @@ on:
     branches:
       - ci-test
 jobs:
-  uad_windows:
-    runs-on: windows-latest
-    steps:
-    - uses: hecrj/setup-rust-action@v1
-      with:
-          rust-version: nightly
-    - uses: actions/checkout@v2
-    - name: Build uad-windows
-      run: |
-        cargo build --features glow --release
-        mv target/release/uad_gui.exe target/release/uad_gui-opengl.exe
-        cargo build --release
-    - name: Create Vulkan build artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: uad_gui-windows
-        path: target/release/uad_gui.exe
-    - name: Create OpenGL build artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: uad_gui-opengl-windows
-        path: target/release/uad_gui-opengl.exe
-
-  uad_linux:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: hecrj/setup-rust-action@v1
-      with:
-          rust-version: nightly
-    - uses: actions/checkout@v2
-    - name: Install dependencies
-      run: |
-        sudo apt-get -qq update
-        sudo apt-get install -y libxkbcommon-dev lld
-
-    - name: Build uad-linux
-      run: |
-        cargo build --features glow --release
-        mv target/release/uad_gui target/release/uad_gui-opengl
-        cargo build --release
-    - name: Create Vulkan build artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: uad_gui-linux
-        path: target/release/uad_gui
-
-    - name: Create OpenGL build artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: uad_gui-opengl-linux
-        path: target/release/uad_gui-opengl
-
-  uad_macos:
-    runs-on: macOS-latest
-    steps:
-    - uses: hecrj/setup-rust-action@v1
-      with:
-          rust-version: nightly
-    - uses: actions/checkout@v2
-    - name: Build uad-macos
-      run: |
-        cargo build --features glow --release
-        mv target/release/uad_gui target/release/uad_gui-opengl
-        cargo build --release
-    - name: Create Vulkan build artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: uad_gui-macos
-        path: target/release/uad_gui
-
-    - name: Create OpenGL build artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: uad_gui-opengl-macos
-        path: target/release/uad_gui-opengl
+  publish:
+    name: Building ${{ matrix.build_target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        build_target: [linux, macos, windows]
+        include:
+          - build_target: linux
+            os: ubuntu-latest
+            artifact_prefix: linux
+          - build_target: macos
+            os: macos-latest
+            artifact_prefix: macos
+          - build_target: windows
+            os: windows-latest
+            artifact_prefix: windows
+  steps:
+  - name: Install Rust toolchain
+    uses: actions-rs/toolchain@v1
+    with:
+      toolchain: nightly
+      override: true
+      target: ${{ matrix.target }}
+      profile: minimal
+  - name: Install Linux dependencies
+    if: matrix.os == 'ubuntu-latest'
+    run: |
+      sudo apt-get -qq update
+      sudo apt-get install -y libxkbcommon-dev lld
+  - uses: actions/checkout@v2
+  - name: Running cargo build
+    uses: actions-rs/cargo@v1
+    with:
+      command: build
+      args: --release --all-features
+  - name: Release
+    uses: softprops/action-gh-release@v1
+    if: startsWith(github.ref, 'refs/tags/')
+    with:
+      body_path: ${{ github.workspace }}/CHANGELOG.md
+      files: target/${{ matrix.target }}/release/uad_gui*
+  - name: Draft release
+    uses: softprops/action-gh-release@v1
+    with:
+      draft: true
+      body_path: ${{ github.workspace }}/CHANGELOG.md
+      files: target/${{ matrix.target }}/release/uad_gui*
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
