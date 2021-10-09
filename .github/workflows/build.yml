@@ -35,11 +35,16 @@ jobs:
           sudo apt-get -qq update
           sudo apt-get install -y libxkbcommon-dev lld
       - uses: actions/checkout@v2
-      - name: Running cargo build
+      - name: Cargo build (WGPU feature)
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release --target ${{ matrix.target }} --all-features
+          args: --release --target ${{ matrix.target }}
+      - name: Cargo build (Glow feature)
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --target ${{ matrix.target }} --features glow
       - name: Rename
         run: |
           mv target/${{ matrix.target }}/release/uad_gui target/${{ matrix.target }}/release/uad_gui-${{ matrix.build_target }}
