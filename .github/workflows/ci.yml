@@ -43,8 +43,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install dependencies
         run: |
-          sudo apt update
-          sudo apt install libxkbcommon-dev lld
+          sudo apt -qq update
+          sudo apt install -y libxkbcommon-dev lld
       - uses: actions/cache@v2
         with:
           path: |
@@ -60,7 +60,6 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: test
-          args: --workspace
 
   fmt:
     name: Rustfmt
