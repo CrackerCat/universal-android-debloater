@@ -1,17 +1,15 @@
 name: Continuous Integration
-# on:
-#   push:
-#     paths:
-#       - '**.rs'
-#       - 'Cargo.lock'
-#       - 'Cargo.toml'
-#   pull_request:
-#     paths:
-#     - '**.rs'
-#     - 'Cargo.lock'
-#     - 'Cargo.toml'
-
-on: push
+on:
+  push:
+    paths:
+      - '**.rs'
+      - 'Cargo.lock'
+      - 'Cargo.toml'
+  pull_request:
+    paths:
+    - '**.rs'
+    - 'Cargo.lock'
+    - 'Cargo.toml'
 
 jobs:
   check:
