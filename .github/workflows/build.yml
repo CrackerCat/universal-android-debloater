@@ -13,13 +13,10 @@ jobs:
         include:
           - build_target: linux
             os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
           - build_target: macos
             os: macos-latest
-            target: x86_64-apple-darwin
           - build_target: windows
             os: windows-latest
-            target: x86_64-pc-windows-msvc
 
     steps:
       - name: Install Rust toolchain
@@ -39,27 +36,27 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release --target ${{ matrix.target }}
+          args: --release
       - name: Renaming
-        run: mv target/${{ matrix.target }}/release/uad_gui target/${{ matrix.target }}/release/uad_gui-${{ matrix.build_target }}
+        run: mv target/release/uad_gui target/release/uad_gui-${{ matrix.build_target }}
       - name: Cargo build (Glow feature)
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release --target ${{ matrix.target }} --features glow
+          args: --release --features glow
       - name: Renaming
-        run: mv target/${{ matrix.target }}/release/uad_gui target/${{ matrix.target }}/release/uad_gui-opengl-${{ matrix.build_target }}
+        run: mv target/release/uad_gui target//release/uad_gui-opengl-${{ matrix.build_target }}
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           body_path: ${{ github.workspace }}/CHANGELOG.md
-          files: target/release/uad_gui*
+          files: target/release/uad_gui-*
       - name: Draft release
         uses: softprops/action-gh-release@v1
         with:
           draft: true
           body_path: ${{ github.workspace }}/CHANGELOG.md
-          files: target/${{ matrix.target }}/release/uad_gui-
+          files: target/release/uad_gui-*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
