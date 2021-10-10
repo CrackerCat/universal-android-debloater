@@ -38,14 +38,16 @@ jobs:
           command: build
           args: --release
       - name: Renaming
-        run: mv target/release/uad_gui target/release/uad_gui-${{ matrix.build_target }}
-      - name: Cargo build (Glow feature)
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release --features glow
-      - name: Renaming
-        run: mv target/release/uad_gui target//release/uad_gui-opengl-${{ matrix.build_target }}
+        run: |
+          mv target/release/uad_gui target/release/uad_gui-${{ matrix.build_target }} || true
+          mv target/release/uad_gui.exe target/release/uad_gui-${{ matrix.build_target }} || true
+      # - name: Cargo build (Glow feature)
+      #   uses: actions-rs/cargo@v1
+      #   with:
+      #     command: build
+      #     args: --release --features glow
+      # - name: Renaming
+      #   run: mv target/release/uad_gui target//release/uad_gui-opengl-${{ matrix.build_target }}
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
