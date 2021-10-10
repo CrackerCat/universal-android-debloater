@@ -38,9 +38,11 @@ jobs:
           command: build
           args: --release
       - name: Renaming
-        run: |
-          mv target/release/uad_gui target/release/uad_gui-${{ matrix.build_target }} || true
-          mv target/release/uad_gui.exe target/release/uad_gui-${{ matrix.build_target }} || true
+        if: matrix.os == 'windows-latest'
+        run: mv target/release/uad_gui.exe target/release/uad_gui-${{ matrix.build_target }}
+      - name: Renaming
+        if: matrix.os != 'windows-latest'
+        run: mv target/release/uad_gui target/release/uad_gui-${{ matrix.build_target }}
       # - name: Cargo build (Glow feature)
       #   uses: actions-rs/cargo@v1
       #   with:
