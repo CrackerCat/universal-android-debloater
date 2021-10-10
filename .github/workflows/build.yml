@@ -50,10 +50,10 @@ jobs:
           args: --release --features glow
       - name: Renaming
         if: matrix.os == 'windows-latest'
-        run: mv target/release/uad_gui.exe target/release/uad_gui-opengl-${{ matrix.build_target }}.exe
+        run: mv target/release/uad_gui.exe target/release/uad_gui-${{ matrix.build_target }}-opengl.exe
       - name: Renaming
         if: matrix.os != 'windows-latest'
-        run: mv target/release/uad_gui target/release/uad_gui-opengl-${{ matrix.build_target }}
+        run: mv target/release/uad_gui target/release/uad_gui-${{ matrix.build_target }}-opengl
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
