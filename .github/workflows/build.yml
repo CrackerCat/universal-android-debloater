@@ -39,28 +39,32 @@ jobs:
           args: --release
       - name: Renaming
         if: matrix.os == 'windows-latest'
-        run: mv target/release/uad_gui.exe target/release/uad_gui-${{ matrix.build_target }}
+        run: mv target/release/uad_gui.exe target/release/uad_gui-${{ matrix.build_target }}.exe
       - name: Renaming
         if: matrix.os != 'windows-latest'
         run: mv target/release/uad_gui target/release/uad_gui-${{ matrix.build_target }}
-      # - name: Cargo build (Glow feature)
-      #   uses: actions-rs/cargo@v1
-      #   with:
-      #     command: build
-      #     args: --release --features glow
-      # - name: Renaming
-      #   run: mv target/release/uad_gui target//release/uad_gui-opengl-${{ matrix.build_target }}
+      - name: Cargo build (Glow feature)
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --features glow
+      - name: Renaming
+        if: matrix.os == 'windows-latest'
+        run: mv target/release/uad_gui.exe target/release/uad_gui-opengl-${{ matrix.build_target }}.exe
+      - name: Renaming
+        if: matrix.os != 'windows-latest'
+        run: mv target/release/uad_gui target/release/uad_gui-opengl-${{ matrix.build_target }}
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           body_path: ${{ github.workspace }}/CHANGELOG.md
-          files: target/release/uad_gui-*
+          files: target/release/uad_gui-*-*
       - name: Draft release
         uses: softprops/action-gh-release@v1
         with:
           draft: true
           body_path: ${{ github.workspace }}/CHANGELOG.md
-          files: target/release/uad_gui-*
+          files: target/release/uad_gui-*-*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
