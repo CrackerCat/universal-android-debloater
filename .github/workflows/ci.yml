@@ -86,6 +86,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          sudo apt -qq update
+          sudo apt install -y lld
       - uses: actions/cache@v2
         with:
           path: |
