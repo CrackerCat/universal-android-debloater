@@ -1,8 +1,9 @@
 name: Build
 on:
   push:
-    branches:
-      - ci-test
+    tags:
+      - '*'
+
 jobs:
   publish:
     name: Building ${{ matrix.build_target }}
@@ -54,18 +55,11 @@ jobs:
       - name: Renaming
         if: matrix.os != 'windows-latest'
         run: mv target/release/uad_gui target/release/uad_gui-${{ matrix.build_target }}-opengl
-      - name: Release
+      - name: Create pre-release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
         with:
           body_path: ${{ github.workspace }}/CHANGELOG.md
           files: target/release/uad_gui-*
           prerelease: true
-      - name: Draft release
-        uses: softprops/action-gh-release@v1
-        with:
-          draft: true
-          body_path: ${{ github.workspace }}/CHANGELOG.md
-          files: target/release/uad_gui-*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
