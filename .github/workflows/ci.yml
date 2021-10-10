@@ -11,6 +11,8 @@ name: Continuous Integration
 #     - 'Cargo.lock'
 #     - 'Cargo.toml'
 
+on: push
+
 jobs:
   check:
     name: Check
