@@ -59,12 +59,13 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           body_path: ${{ github.workspace }}/CHANGELOG.md
-          files: target/release/uad_gui-*-*
+          files: target/release/uad_gui-*
+          prerelease: true
       - name: Draft release
         uses: softprops/action-gh-release@v1
         with:
           draft: true
           body_path: ${{ github.workspace }}/CHANGELOG.md
-          files: target/release/uad_gui-*-*
+          files: target/release/uad_gui-*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
